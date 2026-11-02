@@ -1,69 +1,115 @@
+'use client';
+
+import SearchFilterList from "@/components/SearchFilter";
+import SearchBar from "@/components/SearchBar";
+import styles from "./page.module.css";
+import { antonSans } from "@/app/fonts";
 import Image from "next/image";
+import Link from "next/link";
+import { startTransition, Suspense, use, useEffect, useMemo, useState } from "react";
+import RecipeCard from "@/components/RecipeCard";
+import { Recipe } from "@/types";
+
+import { normalizeForSearch } from "@/app/utils";
+import { fetchRecipes } from "@/app/api";
+
+type SearchFilterConfig = {
+  label: string;
+  searchMatcher: (tags: string[], recipe: Recipe) => boolean;
+}
+
+const filters: SearchFilterConfig[] = [
+  { label: "Ingrédients", searchMatcher: (tags, recipe) => tags.every(tag => recipe.ingredients.some(ingredient => ingredient.ingredient === tag)) },
+  { label: "Appareils", searchMatcher: (tags, recipe) => tags.includes(recipe.appliance) },
+  { label: "Ustensils", searchMatcher: (tags, recipe) => tags.every(tag => recipe.ustensils.includes(tag)) }
+]
 
 export default function Home() {
+  const [searchValue, setSearchValue] = useState("");
+  const normalizedSearchValue = useMemo(() => normalizeForSearch(searchValue), [searchValue]);
+  const [filterSelectedTags, setFilterSelectedTags] = useState<string[][]>(() => filters.map(() => []));
+  const setTagSelected = (filterIndex: number, tag: string, selected: boolean) => {
+    const newSelectedTags = filterSelectedTags?.map((tags, index) => {
+      if (index === filterIndex) {
+        const newSelection = Array.from(tags);
+        if (selected) {
+          newSelection.push(tag);
+        } else {
+          newSelection.splice(newSelection.indexOf(tag), 1);
+        }
+        return newSelection;
+      }
+
+      return tags;
+    })
+    setFilterSelectedTags(newSelectedTags);
+  }
+
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  useEffect(() => {
+    startTransition(async () => {
+      setRecipes(await fetchRecipes() as unknown as Recipe[]);
+    })
+  }, [])
+
+  const matchingRecipes = (recipes as unknown as Recipe[]).filter(recipe => {
+    const allFiltersMatch = filters.every((filter, filterIndex) => {
+      const selectedTags = filterSelectedTags[filterIndex];
+      return selectedTags.length <= 0 || filter.searchMatcher(selectedTags, recipe)
+    })
+    if (!allFiltersMatch) {
+      return false;
+    }
+
+    if (normalizedSearchValue.length < 3) {
+      return true;
+    }
+
+    return normalizeForSearch(recipe.name).includes(normalizedSearchValue)
+      || recipe.ingredients.some(ingredient => normalizeForSearch(ingredient.ingredient).includes(normalizedSearchValue))
+      || recipe.ustensils.some(utensil => normalizeForSearch(utensil).includes(normalizedSearchValue))
+      || normalizeForSearch(recipe.appliance).includes(normalizedSearchValue)
+      || normalizeForSearch(recipe.description).includes(normalizedSearchValue);
+  });
+
+  const visibleIngredients = new Set<string>();
+  const visibleUtensils = new Set<string>();
+  const visibleAppliances = new Set<string>();
+  for (const recipe of matchingRecipes) {
+    recipe.ingredients.forEach(ingredient => visibleIngredients.add(ingredient.ingredient));
+    recipe.ustensils.forEach(utensil => visibleUtensils.add(utensil));
+    visibleAppliances.add(recipe.appliance);
+  }
+
+  const filterItems = [
+    Array.from(visibleIngredients),
+    Array.from(visibleAppliances),
+    Array.from(visibleUtensils),
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <header className={styles.searchHeader}>
+        <Link href={"/"}><Image className={styles.logo} src="/logo.png" width={207} height={25} alt="Logo"/></Link>
+        <div className={styles.searchBar}>
+          <SearchBar searchValue={searchValue} setSearchValue={setSearchValue}/>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <p className={styles.tagline + " " + antonSans.className}>DÉCOUVREZ NOS RECETTES<br/>DU QUOTIDIEN, SIMPLES ET DÉLICIEUSES</p>
+      </header>
+      <main className={styles.content}>
+        <div className={styles.topBar}>
+          <div className={styles.filters}>
+            {filters.map((filter, index) =>
+              <SearchFilterList key={index} label={filter.label} items={filterItems[index]} selectedTags={filterSelectedTags[index]}
+                                setSelectionAction={(tag, selected) => setTagSelected(index, tag, selected)}/>
+            )}
+          </div>
+          <p className={styles.recipeCount + " " + antonSans.className}>{matchingRecipes.length} recettes</p>
+        </div>
+        <div className={styles.recipeList}>
+          {matchingRecipes.map(recipe => <RecipeCard key={recipe.id} recipe={recipe}/>)}
         </div>
       </main>
-    </div>
+    </>
   );
 }

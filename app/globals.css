@@ -3,6 +3,10 @@
   --foreground: #000000;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
 

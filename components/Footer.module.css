@@ -1,0 +1,19 @@
+.footer {
+  width: 100vw;
+  height: 138px;
+
+  display: flex;
+  align-items: center;
+
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.copyright {
+  font-family: Manrope, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+
+  width: 100%;
+  text-align: center;
+}

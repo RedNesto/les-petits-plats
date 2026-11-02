@@ -1,0 +1,69 @@
+.searchHeader {
+  display: flex;
+  flex-direction: column-reverse;
+
+  align-items: center;
+
+  width: 100vw;
+  height: 667px;
+
+  background-size: cover;
+  background-image: url("/header-background.png");
+  background-position-x: right;
+}
+
+.logo {
+  position: absolute;
+  top: 50px;
+  left: 70px;
+
+  align-self: start;
+}
+
+.tagline {
+  font-size: 44px;
+  font-weight: 400;
+
+  text-align: center;
+
+  color: #FFD15B;
+  text-transform: uppercase;
+}
+
+.searchBar {
+  width: 50%;
+  margin-bottom: 10%;
+}
+
+.content {
+  background-color: #EDEDED;
+  width: 100vw;
+
+  padding: 50px;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  gap: 65px;
+}
+
+.recipeCount {
+  font-size: 21px;
+  margin: 0;
+  align-self: center;
+}
+
+.recipeList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
+  justify-content: space-evenly;
+
+  margin: 60px;
+}

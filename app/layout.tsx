@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { manropeSans } from "@/app/fonts";
 import "./globals.css";
-
-const manropeSans = Manrope({
-  variable: "--font-manrope-sans",
-  subsets: ["latin"],
-})
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Les Petits Plats",
@@ -17,6 +13,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="fr" className={`${manropeSans.className}`}>
     <body>
     {children}
+    <Footer/>
     </body>
     </html>
   );
