@@ -1,0 +1,30 @@
+.notFound {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100vw;
+  height: 667px;
+
+  background-size: cover;
+  background-image: url("/header-background.png");
+  background-position-x: right;
+}
+
+.logo {
+  position: absolute;
+  top: 50px;
+  left: 70px;
+}
+
+.notFound h1 {
+  font-size: 70px;
+  color: #FFD15B;
+}
+
+.notFound p {
+  font-size: 40px;
+  color: #FFFFFF;
+}

@@ -1,0 +1,60 @@
+.content {
+  display: flex;
+  justify-content: center;
+  gap: 82px;
+
+  padding: 70px 90px;
+}
+
+.picture {
+  width: 606px;
+  height: 738px;
+
+  border-radius: 21px;
+  background-size: cover;
+  background-position: center;
+}
+
+.content article {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 572px;
+}
+
+.content article h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.content article section h3 {
+  font-size: 16px;
+  color: #7A7A7A;
+  letter-spacing: 9%;
+  text-transform: uppercase;
+}
+
+.ingredientList {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-row-gap: 30px;
+}
+
+.ingredient p {
+  margin: 0;
+}
+
+.ingredient .quantity {
+  color: #7A7A7A;
+}
+
+.time {
+  width: min-content;
+
+  padding: 5px 15px;
+
+  border-radius: 14px;
+  background: #FFD15B;
+
+  font-size: 12px;
+}
