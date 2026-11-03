@@ -146,18 +146,3 @@
   border: 0 solid #b0b0b0;
   border-bottom-width: 1px;
 }
-
-.searchTag {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 17px 18px;
-
-  border-radius: 10px;
-  background-color: #FFD15B;
-}
-
-.searchTag p {
-  font-size: 14px;
-}

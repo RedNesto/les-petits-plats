@@ -1,0 +1,22 @@
+.searchTagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 65px;
+}
+
+.searchTag {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 195px;
+
+  padding: 17px 18px;
+
+  border-radius: 10px;
+  background-color: #FFD15B;
+}
+
+.searchTag p {
+  font-size: 14px;
+}

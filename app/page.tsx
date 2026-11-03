@@ -12,6 +12,7 @@ import { Recipe } from "@/types";
 
 import { normalizeForSearch } from "@/app/utils";
 import { fetchRecipes } from "@/app/api";
+import TagList from "@/components/TagList";
 
 type SearchFilterConfig = {
   label: string;
@@ -87,6 +88,10 @@ export default function Home() {
     Array.from(visibleUtensils),
   ];
 
+  const allSelectedTags = filterSelectedTags
+    .flatMap((byFilter, index) =>
+      byFilter.map(tag => ({ filterIndex: index, label: tag })))
+
   return (
     <>
       <header className={styles.searchHeader}>
@@ -98,11 +103,15 @@ export default function Home() {
       </header>
       <main className={styles.content}>
         <div className={styles.topBar}>
-          <div className={styles.filters}>
-            {filters.map((filter, index) =>
-              <SearchFilterList key={index} label={filter.label} items={filterItems[index]} selectedTags={filterSelectedTags[index]}
-                                setSelectionAction={(tag, selected) => setTagSelected(index, tag, selected)}/>
-            )}
+          <div>
+            <div className={styles.filters}>
+              {filters.map((filter, index) =>
+                <SearchFilterList key={index} label={filter.label} items={filterItems[index]}
+                                  selectedTags={filterSelectedTags[index]}
+                                  setSelectionAction={(tag, selected) => setTagSelected(index, tag, selected)}/>
+              )}
+            </div>
+            <TagList tags={allSelectedTags} removeTag={(filterIndex, tag) => setTagSelected(filterIndex, tag, false)}/>
           </div>
           <p className={styles.recipeCount + " " + antonSans.className}>{matchingRecipes.length} recettes</p>
         </div>
