@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 import { antonSans } from "@/app/fonts";
 import Image from "next/image";
 import Link from "next/link";
-import { startTransition, Suspense, use, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useState } from "react";
 import RecipeCard from "@/components/RecipeCard";
 import { Recipe } from "@/types";
 
