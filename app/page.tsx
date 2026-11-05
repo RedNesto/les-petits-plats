@@ -53,7 +53,7 @@ export default function Home() {
     })
   }, [])
 
-  const matchingRecipes = (recipes as unknown as Recipe[]).filter(recipe => {
+  const matchingRecipes = recipes.filter(recipe => {
     const allFiltersMatch = filters.every((filter, filterIndex) => {
       const selectedTags = filterSelectedTags[filterIndex];
       return selectedTags.length <= 0 || filter.searchMatcher(selectedTags, recipe)
